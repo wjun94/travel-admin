@@ -1,0 +1,39 @@
+{
+  "name": "photo-print-admin",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 3000",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@ant-design/icons": "^6.2.3",
+    "@tailwindcss/postcss": "^4.3.0",
+    "@tanstack/react-query": "^5.100.11",
+    "@types/node": "^25.9.1",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.2",
+    "@wangeditor/editor": "^5.1.23",
+    "@wangeditor/editor-for-react": "^1.0.6",
+    "ahooks": "^3.9.7",
+    "antd": "^6.4.3",
+    "autoprefixer": "^10.5.0",
+    "axios": "^1.16.1",
+    "chart.js": "^4.5.1",
+    "dayjs": "^1.11.20",
+    "postcss": "^8.5.15",
+    "react": "^19.2.6",
+    "react-chartjs-2": "^5.3.1",
+    "react-router-dom": "^7.15.1",
+    "tailwindcss": "^4.3.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.0.12",
+    "zustand": "^5.0.13"
+  },
+  "dependencies": {
+    "react-dom": "^19.2.6"
+  }
+}

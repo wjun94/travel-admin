@@ -1,0 +1,57 @@
+// src/router/index.tsx 完整正确配置
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
+import { AuthGuard } from './AuthGuard'
+import AppLayout from '@/app/layout'
+import Login from '@/app/login/page'
+import Dashboard from '@/app/dashboard/page'
+import Products from '@/app/products/list/page'
+import ProductsEdit from '@/app/products/edit/page'
+import Orders from '@/app/orders/page'
+import Commission from '@/app/commission/page'
+import WxUsers from '@/app/wx-user/page'
+import OrderDetail from '@/app/orders/[id]/page' // 导入详情页组件
+import QrcodeSettings from '@/app/settings/qrcode/page'
+
+const router = createBrowserRouter([
+  {
+    path: '/login',
+    element: <Login />
+  },
+  {
+    path: '/',
+    element: <AuthGuard><AppLayout /></AuthGuard>,
+    // ✅ 添加根路径重定向（非常重要！）
+    children: [
+      { path: '/', element: <Navigate to="/dashboard" replace /> },
+      { path: '/dashboard', element: <Dashboard /> },
+      { path: '/products', element: <Products /> },
+      { path: '/products/create', element: <ProductsEdit /> },
+      { path: '/products/edit/:id', element: <ProductsEdit /> },
+      { path: '/orders', element: <Orders /> },
+      { path: '/settings/commission', element: <Commission /> },
+      // React Router
+      { path: '/settings/qrcode', element: <QrcodeSettings /> },
+      // ✅ 添加动态路由
+      {
+        path: '/orders/:id',
+        element: <OrderDetail />
+      },
+      {
+        path: '/wx-users',
+        element: <WxUsers />
+      }
+    ]
+  },
+  // ✅ 添加404页面（捕获所有未匹配的路由）
+  {
+    path: '*',
+    element: <div style={{ textAlign: 'center', padding: 100 }}>
+      <h1>404 - 页面不存在</h1>
+      <button onClick={() => window.location.href = '/dashboard'}>返回首页</button>
+    </div>
+  }
+])
+
+export default function Router() {
+  return <RouterProvider router={router} />
+}
