@@ -3,9 +3,7 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
-
-// 引入接口
-import { loginApi, LoginParams } from '@/api'
+import { loginApi, LoginParams } from '@/api/auth'
 
 export default function Login() {
   const [form] = Form.useForm<LoginParams>()

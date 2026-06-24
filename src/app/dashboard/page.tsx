@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Card, Col, Row, Statistic, Spin } from 'antd';
 import { UserOutlined, FileTextOutlined, TeamOutlined } from '@ant-design/icons';
-import { getDashboard, DashboardData } from '@/api/dashboard';
+import { getDashboardData, DashboardData } from '@/api/dashboard';
 
 const Dashboard = () => {
   const [data, setData] = useState<DashboardData | null>(null);
@@ -9,7 +9,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     setLoading(true);
-    getDashboard()
+    getDashboardData()
       .then(res => {
         setData(res?.data);
       })
