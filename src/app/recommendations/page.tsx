@@ -138,8 +138,11 @@ const RecommendationsPage = () => {
         onOk={handleSubmit}
         okText="保存"
         cancelText="取消"
-        destroyOnClose
+        destroyOnHidden
         // 核心：内容区最大高度 + 溢出滚动
+        mask={{
+          closable: false,
+        }}
         styles={{
           body: {
             maxHeight: '70vh',

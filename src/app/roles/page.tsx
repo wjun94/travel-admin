@@ -69,7 +69,7 @@ const RolesPage = () => {
         title="角色管理"
         rowKey="id"
         columns={columns}
-        request={() => getRoles().then(res => ({ data: { list: res?.data || [], total: res?.data?.length || 0 } }))}
+        request={getRoles}
         extra={<Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>新增角色</Button>}
         showSearch={false}
       />
