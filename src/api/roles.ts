@@ -1,5 +1,8 @@
 import request from '@/lib/axios'
 
+/**
+ * 角色实体
+ */
 export interface Role {
   id: number;
   name: string;
@@ -7,12 +10,21 @@ export interface Role {
   permissions: string;
 }
 
+/**
+ * 获取所有角色列表
+ * @returns 角色数组
+ */
 export const getRoles = () =>
   request<Role[]>({
     url: '/admin/roles',
     method: 'GET',
   });
 
+/**
+ * 创建新角色
+ * @param data 角色名称、描述、权限JSON字符串
+ * @returns void
+ */
 export const createRole = (data: { name: string; description: string; permissions: string }) =>
   request({
     url: '/admin/role',
@@ -20,6 +32,12 @@ export const createRole = (data: { name: string; description: string; permission
     data,
   });
 
+/**
+ * 更新角色信息
+ * @param id 角色ID
+ * @param data 可选更新的字段
+ * @returns void
+ */
 export const updateRole = (id: number, data: { name?: string; description?: string; permissions?: string }) =>
   request({
     url: `/admin/role/${id}`,
@@ -27,6 +45,11 @@ export const updateRole = (id: number, data: { name?: string; description?: stri
     data,
   });
 
+/**
+ * 删除角色
+ * @param id 角色ID
+ * @returns void
+ */
 export const deleteRole = (id: number) =>
   request({
     url: `/admin/role/${id}`,

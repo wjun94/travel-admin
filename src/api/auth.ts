@@ -1,41 +1,48 @@
-import request from "@/lib/axios";
+import request from '@/lib/axios'
 
-// 登录参数类型
-export interface LoginParams {
-  username: string;
-  password: string;
-}
-
-// 用户信息（包含权限）
-export interface UserInfo {
-  id: number
-  username: string
-  roles: string[]
-  permissions: string[]
-}
-
-// 登录返回值类型
-export interface LoginResult {
+/**
+ * 管理员登录接口返回类型
+ */
+export interface LoginResponse {
   token: string;
   user: {
     id: number;
     username: string;
-    roles: string[];
-    permissions: string[];
+    role: string;
   };
 }
 
-// 登录接口
-export function loginApi(data: LoginParams) {
-  return request.post<LoginResult>("/admin/login", data);
+/**
+ * 管理员信息接口返回类型
+ */
+export interface AdminInfo {
+  id: number;
+  username: string;
+  role: {
+    name: string;
+    permissions: string;
+  };
 }
 
-// 获取用户信息 + 权限 ← 重点
-export function getUserInfoApi() {
-  return request.get<UserInfo>('/admin/info')
-}
+/**
+ * 管理员登录
+ * @param username 用户名
+ * @param password 密码
+ * @returns 登录结果，包含 token 和用户基本信息
+ */
+export const adminLogin = (username: string, password: string) =>
+  request<LoginResponse>({
+    url: '/admin/login',
+    method: 'POST',
+    data: { username, password },
+  });
 
-// 登出接口
-export function logoutApi() {
-  return request.post("/auth/logout");
-}
+/**
+ * 获取当前登录管理员信息
+ * @returns 管理员详情及角色权限
+ */
+export const getAdminInfo = () =>
+  request<AdminInfo>({
+    url: '/admin/info',
+    method: 'GET',
+  });

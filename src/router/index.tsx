@@ -4,9 +4,12 @@ import { AuthGuard } from './AuthGuard'
 import AppLayout from '@/app/layout'
 import Login from '@/app/login/page'
 import Dashboard from '@/app/dashboard/page'
-import AdminUser from '@/app/admin-user/page'
-import Rules from '@/app/rules/page'
+import AdminUsers from '@/app/admin-users/page'
+import Roles from '@/app/roles/page'
 import Users from '@/app/users/page'
+import Posts from '@/app/posts/page'
+import Partners from '@/app/partners/page'
+import Recommendations from '@/app/recommendations/page'
 
 const router = createBrowserRouter([
   {
@@ -20,9 +23,12 @@ const router = createBrowserRouter([
     children: [
       { path: '/', element: <Navigate to="/dashboard" replace /> },
       { path: '/dashboard', element: <Dashboard /> },
-      { path: '/admin-user', element: <AdminUser /> },
-      { path: '/rules', element: <Rules /> },
+      { path: '/admin-users', element: <AdminUsers /> },
+      { path: '/roles', element: <Roles /> },
       { path: '/users', element: <Users /> },
+      { path: '/posts', element: <Posts /> },
+      { path: '/partners', element: <Partners /> },
+      { path: '/recommendations', element: <Recommendations /> },
     ]
   },
   // ✅ 添加404页面（捕获所有未匹配的路由）

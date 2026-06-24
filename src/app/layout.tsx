@@ -1,10 +1,15 @@
 import { Layout, Menu, Avatar, Dropdown } from 'antd'
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { useState, useEffect, useMemo } from 'react'
-import { UserOutlined } from '@ant-design/icons'
 import { useAuthStore } from '@/stores/authStore'
 import {
   DashboardOutlined,
+  UserOutlined,
+  TeamOutlined,
+  SettingOutlined,
+  FileTextOutlined,
+  UsergroupAddOutlined,
+  StarOutlined,
   LogoutOutlined,
 } from '@ant-design/icons'
 
@@ -20,10 +25,13 @@ export default function AppLayout() {
 
   // ✅ 菜单配置（以后只需要在这里添加新菜单，自动适配所有逻辑）
   const menuItems = [
-    { key: '/dashboard', icon: <DashboardOutlined />, label: '数据仪表盘' },
-    { key: '/users', icon: <UserOutlined />, label: '用户管理' },
-    { key: '/admin-user', icon: <UserOutlined />, label: '管理员管理' },
-    { key: '/rules', icon: <UserOutlined />, label: '角色管理' },
+    { key: '/dashboard', icon: <DashboardOutlined />, label: '仪表盘' },
+    { key: '/admin-users', icon: <UserOutlined />, label: '后台用户' },
+    { key: '/roles', icon: <SettingOutlined />, label: '角色管理' },
+    { key: '/users', icon: <TeamOutlined />, label: '小程序用户' },
+    { key: '/posts', icon: <FileTextOutlined />, label: '攻略审核' },
+    { key: '/partners', icon: <UsergroupAddOutlined />, label: '官方搭子' },
+    { key: '/recommendations', icon: <StarOutlined />, label: '推荐管理' },
   ]
 
   const userMenu = [
