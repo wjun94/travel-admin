@@ -4,13 +4,9 @@ import { AuthGuard } from './AuthGuard'
 import AppLayout from '@/app/layout'
 import Login from '@/app/login/page'
 import Dashboard from '@/app/dashboard/page'
-import Products from '@/app/products/list/page'
-import ProductsEdit from '@/app/products/edit/page'
-import Orders from '@/app/orders/page'
-import Commission from '@/app/commission/page'
-import WxUsers from '@/app/wx-user/page'
-import OrderDetail from '@/app/orders/[id]/page' // 导入详情页组件
-import QrcodeSettings from '@/app/settings/qrcode/page'
+import AdminUser from '@/app/admin-user/page'
+import Rules from '@/app/rules/page'
+import Users from '@/app/users/page'
 
 const router = createBrowserRouter([
   {
@@ -24,22 +20,9 @@ const router = createBrowserRouter([
     children: [
       { path: '/', element: <Navigate to="/dashboard" replace /> },
       { path: '/dashboard', element: <Dashboard /> },
-      { path: '/products', element: <Products /> },
-      { path: '/products/create', element: <ProductsEdit /> },
-      { path: '/products/edit/:id', element: <ProductsEdit /> },
-      { path: '/orders', element: <Orders /> },
-      { path: '/settings/commission', element: <Commission /> },
-      // React Router
-      { path: '/settings/qrcode', element: <QrcodeSettings /> },
-      // ✅ 添加动态路由
-      {
-        path: '/orders/:id',
-        element: <OrderDetail />
-      },
-      {
-        path: '/wx-users',
-        element: <WxUsers />
-      }
+      { path: '/admin-user', element: <AdminUser /> },
+      { path: '/rules', element: <Rules /> },
+      { path: '/users', element: <Users /> },
     ]
   },
   // ✅ 添加404页面（捕获所有未匹配的路由）
