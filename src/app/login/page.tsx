@@ -32,7 +32,7 @@ export default function Login() {
       background: '#f0f2f5'
     }}>
       <div style={{ width: 400, padding: 32, background: '#fff', borderRadius: 8 }}>
-        <h2 style={{ textAlign: 'center', marginBottom: 24 }}>商城后台管理系统</h2>
+        <h2 style={{ textAlign: 'center', marginBottom: 24 }}>旅游后台管理系统</h2>
 
         <Form
           form={form}

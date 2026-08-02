@@ -1,4 +1,4 @@
-# React 商城后台管理系统
+# React 旅游后台管理系统
 
 <div align="center">
   <img src="https://img.shields.io/badge/React-18.3.1-blue" alt="React">
@@ -8,7 +8,7 @@
   <img src="https://img.shields.io/badge/License-MIT-yellow" alt="License">
 </div>
 
-开箱即用的现代化商城后台管理系统模板，采用最新前端技术栈构建，包含完整的RBAC权限管理系统、通用组件封装和工程化配置，可直接用于生产环境开发。
+开箱即用的现代化旅游后台管理系统模板，采用最新前端技术栈构建，包含完整的RBAC权限管理系统、通用组件封装和工程化配置，可直接用于生产环境开发。
 
 ## ✨ 核心特性
 
@@ -67,7 +67,7 @@ cp .env.example .env.development
 ```env
 # .env.development
 VITE_API_BASE_URL=http://localhost:3000/api
-VITE_APP_TITLE=商城后台管理系统
+VITE_APP_TITLE=旅游后台管理系统
 VITE_ENABLE_MOCK=false
 ```
 
@@ -351,7 +351,7 @@ docker-compose up -d --build
 
 ## 📄 许可证
 
-MIT License © 2026 商城后台管理系统
+MIT License © 2026 旅游后台管理系统
 
 ---
 
