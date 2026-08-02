@@ -6,14 +6,6 @@ export interface LoginParams {
   password: string;
 }
 
-// 用户信息（包含权限）
-export interface UserInfo {
-  id: number
-  username: string
-  roles: string[]
-  permissions: string[]
-}
-
 /**
  * 管理员登录接口返回类型
  */

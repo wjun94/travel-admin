@@ -10,6 +10,8 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
 
   return {
+    // 部署到域名 /admin 路径下
+    base: '/admin/',
     plugins: [react()],
     resolve: {
       alias: {

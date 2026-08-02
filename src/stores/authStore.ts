@@ -1,18 +1,27 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { getUserInfoApi, UserInfo } from '@/api/auth'
+import { getUserInfoApi, AdminInfo } from '@/api/auth'
 
 interface AuthState {
   token: string | null
-  userInfo: UserInfo | null
+  userInfo: AdminInfo | null
   permissions: string[]
   roles: string[]
 
   setToken: (token: string) => void
-  setUserInfo: (user: UserInfo) => void
   logout: () => void
   hasPermission: (perm: string) => boolean
-  fetchUserInfo: () => Promise<UserInfo | null>
+  fetchUserInfo: () => Promise<AdminInfo | null>
+}
+
+// 后端 permissions 是 JSON 字符串，如 ["dashboard","users_manage"]
+function parsePermissions(raw: string): string[] {
+  try {
+    const parsed = JSON.parse(raw || '[]')
+    return Array.isArray(parsed) ? parsed : []
+  } catch {
+    return []
+  }
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -25,13 +34,6 @@ export const useAuthStore = create<AuthState>()(
 
       // 设置token
       setToken: (token: string) => set({ token }),
-
-      // 设置用户信息 & 权限
-      setUserInfo: (user: UserInfo) => set({
-        userInfo: user,
-        roles: user.roles || [],
-        permissions: user.permissions || [],
-      }),
 
       // 退出登录
       logout: () => set({
@@ -49,9 +51,14 @@ export const useAuthStore = create<AuthState>()(
       // 获取用户信息 + 权限
       fetchUserInfo: async () => {
         try {
-          const userInfo = await getUserInfoApi()
-          get().setUserInfo(userInfo.data)
-          return userInfo.data
+          const res = await getUserInfoApi()
+          const info = res.data
+          set({
+            userInfo: info,
+            roles: [info.role.name],
+            permissions: parsePermissions(info.role.permissions),
+          })
+          return info
         } catch (err) {
           get().logout()
           return null

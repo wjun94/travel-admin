@@ -36,10 +36,13 @@ const router = createBrowserRouter([
     path: '*',
     element: <div style={{ textAlign: 'center', padding: 100 }}>
       <h1>404 - 页面不存在</h1>
-      <button onClick={() => window.location.href = '/dashboard'}>返回首页</button>
+      <button onClick={() => window.location.href = '/admin/dashboard'}>返回首页</button>
     </div>
   }
-])
+], {
+  // 部署在 /admin 路径下
+  basename: '/admin',
+})
 
 export default function Router() {
   return <RouterProvider router={router} />
