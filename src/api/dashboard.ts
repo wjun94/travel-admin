@@ -5,7 +5,7 @@ import request from '@/lib/axios'
  */
 export interface DashboardData {
   userCount: number;
-  postCount: number;
+  guideCount: number;
   partnerCount: number;
 }
 

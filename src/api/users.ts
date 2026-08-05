@@ -5,19 +5,20 @@ import request from '@/lib/axios'
  * 小程序用户
  */
 export interface WxUser {
-  id: number;
+  id: string;
   nickname: string;
   avatarUrl: string;
+  phone: string;
   role: number;   // 0普通 1领队 2管理员
   createdAt: string;
 }
 
 /**
- * 分页获取小程序用户列表
- * @param params 分页及查询参数
+ * 分页获取小程序用户列表（支持昵称/手机号关键词）
+ * @param params 分页及查询参数（page/pageSize/keyword）
  * @returns 用户列表及总数
  */
-export const getWxUsers = (params: { page: number; size: number;[key: string]: any }) =>
+export const getWxUsers = (params: { page: number; pageSize: number; keyword?: string; [key: string]: any }) =>
   request<{ list: WxUser[]; total: number }>({
     url: '/admin/users',
     method: 'GET',
@@ -30,7 +31,7 @@ export const getWxUsers = (params: { page: number; size: number;[key: string]: a
  * @param role 新角色（0普通 1领队 2管理员）
  * @returns void
  */
-export const updateWxUserRole = (id: number, role: number) =>
+export const updateWxUserRole = (id: string, role: number) =>
   request({
     url: `/admin/user/${id}/role`,
     method: 'PUT',

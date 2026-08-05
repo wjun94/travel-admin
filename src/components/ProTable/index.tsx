@@ -8,7 +8,7 @@ import dayjs from 'dayjs' // ✅ 导入 dayjs
 // 通用分页请求参数
 export interface PageParams {
   page: number
-  size: number
+  pageSize: number
   [key: string]: any
 }
 
@@ -70,6 +70,7 @@ function ProTableInner<T extends object>(
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
+    total: 0,
     showSizeChanger: true,
     showTotal: (total: number) => `共 ${total} 条`
   })
@@ -88,7 +89,7 @@ function ProTableInner<T extends object>(
     try {
       const res = await request({
         page,
-        size: pageSize,
+        pageSize,
         ...params
       })
 
@@ -98,7 +99,7 @@ function ProTableInner<T extends object>(
         ...pagination,
         current: page,
         pageSize,
-        // total: tableData.length
+        total: Number(res.data?.total) || tableData.length,
       })
     } catch (err) {
       console.error('获取数据失败:', err)

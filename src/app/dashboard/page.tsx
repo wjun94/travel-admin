@@ -30,7 +30,7 @@ const Dashboard = () => {
     },
     {
       title: '攻略总数',
-      value: data?.postCount ?? 0,
+      value: data?.guideCount ?? 0,
       icon: <FileTextOutlined />,
       color: '#52c41a',
       bgColor: '#f0fff4'

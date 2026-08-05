@@ -4,7 +4,7 @@ import request from '@/lib/axios'
  * 推荐内容
  */
 export interface Recommendation {
-  id: number;
+  id: string;
   title: string;
   cover: string;
   city: string;

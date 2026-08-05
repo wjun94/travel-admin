@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Button, Modal, Form, Input, message } from 'antd';
+import { Button, Modal, Form, Input, Tag, Popover, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import ProTable, { ProTableRef } from '@/components/ProTable';
 import { getRoles, createRole, updateRole, deleteRole, Role } from '@/api/roles';
@@ -22,7 +22,7 @@ const RolesPage = () => {
     setModalVisible(true);
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     Modal.confirm({
       title: '确认删除',
       content: '删除角色可能会影响关联用户，确定继续吗？',
@@ -47,10 +47,45 @@ const RolesPage = () => {
     tableRef.current?.handleRefresh();
   };
 
+  // 解析权限JSON字符串，返回权限名称数组
+  const parsePerms = (raw: string): string[] => {
+    try {
+      const parsed = JSON.parse(raw || '[]');
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  };
+
   const columns = [
     { title: 'ID', dataIndex: 'id', width: 80 },
     { title: '角色名称', dataIndex: 'name' },
-    { title: '描述', dataIndex: 'description' },
+    { title: '描述', dataIndex: 'description', ellipsis: true },
+    {
+      title: '权限',
+      dataIndex: 'permissions',
+      ellipsis: true,
+      render: (perms: string) => {
+        const list = parsePerms(perms);
+        if (list.length === 0) return <span style={{ color: '#999' }}>无</span>;
+        return (
+          <Popover
+            title="权限列表"
+            content={
+              <div style={{ maxWidth: 300 }}>
+                {list.map((p) => <Tag key={p} style={{ marginBottom: 4 }}>{p}</Tag>)}
+              </div>
+            }
+            trigger="hover"
+          >
+            <span>
+              {list.slice(0, 3).map((p) => <Tag key={p} color="blue" style={{ marginInlineEnd: 4 }}>{p}</Tag>)}
+              {list.length > 3 && <Tag>+{list.length - 3}</Tag>}
+            </span>
+          </Popover>
+        );
+      },
+    },
     {
       title: '操作',
       render: (_: any, record: Role) => (

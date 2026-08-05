@@ -13,8 +13,8 @@ const AdminUsersPage = () => {
   const [form] = Form.useForm();
 
   const fetchRoles = async () => {
-    const data = await getRoles();
-    setRoles(data?.data || []);
+    const res = await getRoles();
+    setRoles(res?.data?.list || []);
   };
 
   const handleAdd = async () => {
@@ -36,7 +36,7 @@ const AdminUsersPage = () => {
     setModalVisible(true);
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     Modal.confirm({
       title: '确认删除',
       content: '确定要删除该用户吗？',

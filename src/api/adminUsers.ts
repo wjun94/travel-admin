@@ -5,9 +5,9 @@ import type { Role } from './roles';
  * 后台管理员用户
  */
 export interface AdminUser {
-  id: number;
+  id: string;
   username: string;
-  roleId: number;
+  roleId: string;
   role: Role;
   status: number;
   createdAt: string;
@@ -18,7 +18,7 @@ export interface AdminUser {
  * @param params 分页及查询参数
  * @returns 管理员用户列表及总数
  */
-export const getAdminUsers = (params: { page: number; size: number;[key: string]: any }) =>
+export const getAdminUsers = (params: { page: number; pageSize: number; [key: string]: any }) =>
   request<{ list: AdminUser[]; total: number }>({
     url: '/admin/admin/users',
     method: 'GET',
@@ -30,7 +30,7 @@ export const getAdminUsers = (params: { page: number; size: number;[key: string]
  * @param data 包含用户名、密码、角色ID
  * @returns void
  */
-export const createAdminUser = (data: { username: string; password: string; roleId: number }) =>
+export const createAdminUser = (data: { username: string; password: string; roleId: string }) =>
   request({
     url: '/admin/user',
     method: 'POST',
@@ -43,7 +43,7 @@ export const createAdminUser = (data: { username: string; password: string; role
  * @param data 可更新角色ID、状态、密码
  * @returns void
  */
-export const updateAdminUser = (id: number, data: { roleId?: number; status?: number; password?: string }) =>
+export const updateAdminUser = (id: string, data: { roleId?: string; status?: number; password?: string }) =>
   request({
     url: `/admin/user/${id}`,
     method: 'PUT',
@@ -55,7 +55,7 @@ export const updateAdminUser = (id: number, data: { roleId?: number; status?: nu
  * @param id 用户ID
  * @returns void
  */
-export const deleteAdminUser = (id: number) =>
+export const deleteAdminUser = (id: string) =>
   request({
     url: `/admin/user/${id}`,
     method: 'DELETE',

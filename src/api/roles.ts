@@ -4,20 +4,22 @@ import request from '@/lib/axios'
  * 角色实体
  */
 export interface Role {
-  id: number;
+  id: string;
   name: string;
   description: string;
-  permissions: string;
+  permissions: string; // 权限JSON字符串，如 ["dashboard","users_manage"]
 }
 
 /**
- * 获取所有角色列表
- * @returns 角色数组
+ * 分页获取角色列表
+ * @param params 分页参数
+ * @returns 角色列表及总数
  */
-export const getRoles = () =>
-  request<Role[]>({
+export const getRoles = (params?: { page?: number; pageSize?: number }) =>
+  request<{ list: Role[]; total: number }>({
     url: '/admin/roles',
     method: 'GET',
+    params,
   });
 
 /**
@@ -38,7 +40,7 @@ export const createRole = (data: { name: string; description: string; permission
  * @param data 可选更新的字段
  * @returns void
  */
-export const updateRole = (id: number, data: { name?: string; description?: string; permissions?: string }) =>
+export const updateRole = (id: string, data: { name?: string; description?: string; permissions?: string }) =>
   request({
     url: `/admin/role/${id}`,
     method: 'PUT',
@@ -50,7 +52,7 @@ export const updateRole = (id: number, data: { name?: string; description?: stri
  * @param id 角色ID
  * @returns void
  */
-export const deleteRole = (id: number) =>
+export const deleteRole = (id: string) =>
   request({
     url: `/admin/role/${id}`,
     method: 'DELETE',

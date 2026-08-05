@@ -12,7 +12,7 @@ export interface LoginParams {
 export interface LoginResponse {
   token: string;
   user: {
-    id: number;
+    id: string;
     username: string;
     role: string;
   };
@@ -22,7 +22,7 @@ export interface LoginResponse {
  * 管理员信息接口返回类型
  */
 export interface AdminInfo {
-  id: number;
+  id: string;
   username: string;
   role: {
     name: string;
@@ -32,15 +32,15 @@ export interface AdminInfo {
 
 // 登录接口
 export function loginApi(data: LoginParams) {
-  return request.post<LoginResponse>("/admin/login", data);
+  return request<LoginResponse>({ url: "/admin/login", method: "POST", data });
 }
 
-// 获取用户信息 + 权限 ← 重点
+// 获取用户信息 + 权限
 export function getUserInfoApi() {
-  return request.get<AdminInfo>('/admin/info')
+  return request<AdminInfo>({ url: "/admin/info", method: "GET" })
 }
 
-// 登出接口
+// 登出：后端无登出接口，由前端清空本地状态
 export function logoutApi() {
-  return request.post("/auth/logout");
+  return Promise.resolve()
 }

@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Button, Modal, Form, Input, InputNumber, DatePicker, message, Tag } from 'antd';
+import { Button, Modal, Form, Input, InputNumber, DatePicker, message, Tag, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import type { Dayjs } from 'dayjs';
 import ProTable, { ProTableRef } from '@/components/ProTable';
@@ -10,6 +10,16 @@ import dayjs from 'dayjs';
 interface PartnerForm extends Omit<PartnerParams, 'startDate'> {
   startDate: Dayjs;
 }
+
+const categoryOptions = [
+  { value: '旅游', label: '旅游' },
+  { value: '美食', label: '美食' },
+  { value: '运动', label: '运动' },
+  { value: '学习', label: '学习' },
+  { value: '探店', label: '探店' },
+  { value: '看展', label: '看展' },
+  { value: '桌游', label: '桌游' },
+];
 
 const PartnersPage = () => {
   const tableRef = useRef<ProTableRef>(null);
@@ -34,7 +44,8 @@ const PartnersPage = () => {
 
       const payload: PartnerParams = {
         ...values,
-        startDate: dayjs(values.startDate).format('YYYY-MM-DD'),
+        // 后端 *time.Time 需要 RFC3339 格式，不能用 YYYY-MM-DD
+        startDate: dayjs(values.startDate).toISOString(),
       };
 
       await createOfficialPartner(payload);
@@ -54,17 +65,20 @@ const PartnersPage = () => {
     0: { label: '招募中', color: 'green' },
     1: { label: '满员', color: 'blue' },
     2: { label: '已取消', color: 'red' },
+    3: { label: '已过期', color: 'default' },
   };
 
   const columns = [
     { title: 'ID', dataIndex: 'id', width: 60 },
-    { title: '目的地', dataIndex: 'destination' },
+    { title: '标题', dataIndex: 'title', ellipsis: true },
+    { title: '目的地', dataIndex: 'destination', width: 120 },
     {
       title: '出发日期',
       dataIndex: 'startDate',
-      render: (val: string) => dayjs(val).format('YYYY-MM-DD'),
+      width: 120,
+      render: (val: string) => (val ? dayjs(val).format('YYYY-MM-DD') : '-'),
     },
-    { title: '天数', dataIndex: 'days', width: 80 },
+    { title: '天数', dataIndex: 'days', width: 70 },
     {
       title: '人数',
       width: 100,
@@ -72,9 +86,9 @@ const PartnersPage = () => {
     },
     {
       title: '价格',
-      dataIndex: 'price',
+      dataIndex: 'officialPrice',
       width: 100,
-      render: (val: number) => `¥${val}`,
+      render: (val: number) => (val ? `¥${val}` : '-'),
     },
     {
       title: '状态',
@@ -86,15 +100,10 @@ const PartnersPage = () => {
       },
     },
     {
-      title: '类型',
-      dataIndex: 'type',
-      width: 100,
-      render: (type: number) => <Tag>{type === 1 ? '官方' : '用户'}</Tag>,
-    },
-    {
       title: '创建时间',
       dataIndex: 'createdAt',
-      render: (val: string) => dayjs(val).format('YYYY-MM-DD HH:mm'),
+      width: 170,
+      render: (val: string) => (val ? dayjs(val).format('YYYY-MM-DD HH:mm') : '-'),
     },
   ];
 
@@ -109,15 +118,6 @@ const PartnersPage = () => {
         searchFields={[
           { name: 'destination', label: '目的地', type: 'input' },
           {
-            name: 'type',
-            label: '类型',
-            type: 'select',
-            options: [
-              { value: 0, label: '用户' },
-              { value: 1, label: '官方' },
-            ],
-          },
-          {
             name: 'status',
             label: '状态',
             type: 'select',
@@ -125,6 +125,7 @@ const PartnersPage = () => {
               { value: 0, label: '招募中' },
               { value: 1, label: '满员' },
               { value: 2, label: '已取消' },
+              { value: 3, label: '已过期' },
             ],
           },
         ]}
@@ -138,14 +139,13 @@ const PartnersPage = () => {
       <Modal
         title="发布官方搭子团"
         open={modalOpen}
-        width={520}
+        width={560}
         onOk={handleCreate}
         onCancel={handleCancel}
         okText="发布"
         confirmLoading={submitting}
         destroyOnHidden
         keyboard={false}
-        // antd 6.x 标准写法：替代废弃的 maskClosable
         mask={{
           closable: false,
         }}
@@ -158,6 +158,18 @@ const PartnersPage = () => {
         }}
       >
         <Form form={form} layout="vertical" style={{ marginTop: 8 }}>
+          <Form.Item
+            name="title"
+            label="标题"
+            rules={[{ required: true, message: '请输入标题' }]}
+          >
+            <Input placeholder="请输入招募标题" maxLength={50} showCount />
+          </Form.Item>
+
+          <Form.Item name="category" label="分类">
+            <Select allowClear placeholder="选择活动分类" options={categoryOptions} />
+          </Form.Item>
+
           <Form.Item
             name="destination"
             label="目的地"
@@ -191,7 +203,7 @@ const PartnersPage = () => {
           </Form.Item>
 
           <Form.Item
-            name="price"
+            name="officialPrice"
             label="价格 (元)"
             rules={[{ required: true, message: '请输入价格' }]}
           >
@@ -203,8 +215,12 @@ const PartnersPage = () => {
             />
           </Form.Item>
 
+          <Form.Item name="desc" label="行程简述">
+            <Input.TextArea rows={2} placeholder="请填写行程亮点、路线概述" />
+          </Form.Item>
+
           <Form.Item name="requirement" label="要求">
-            <Input.TextArea rows={3} placeholder="请填写参团要求、注意事项等" />
+            <Input.TextArea rows={2} placeholder="请填写参团要求、注意事项等" />
           </Form.Item>
         </Form>
       </Modal>
