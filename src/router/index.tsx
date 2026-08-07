@@ -11,6 +11,7 @@ import Posts from '@/app/posts/page'
 import Partners from '@/app/partners/page'
 import Recommendations from '@/app/recommendations/page'
 import Complaints from '@/app/complaints/page'
+import Messages from '@/app/messages/page'
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,7 @@ const router = createBrowserRouter([
       { path: '/partners', element: <Partners /> },
       { path: '/recommendations', element: <Recommendations /> },
       { path: '/complaints', element: <Complaints /> },
+      { path: '/messages', element: <Messages /> },
     ]
   },
   // ✅ 添加404页面（捕获所有未匹配的路由）

@@ -11,6 +11,7 @@ import {
   UsergroupAddOutlined,
   StarOutlined,
   WarningOutlined,
+  MessageOutlined,
   LogoutOutlined,
 } from '@ant-design/icons'
 
@@ -34,6 +35,7 @@ export default function AppLayout() {
     { key: '/partners', icon: <UsergroupAddOutlined />, label: '官方搭子' },
     { key: '/recommendations', icon: <StarOutlined />, label: '推荐管理' },
     { key: '/complaints', icon: <WarningOutlined />, label: '投诉管理' },
+    { key: '/messages', icon: <MessageOutlined />, label: '消息管理' },
   ]
 
   const userMenu = [
