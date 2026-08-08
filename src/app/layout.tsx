@@ -2,6 +2,7 @@ import { Layout, Menu, Avatar, Dropdown } from 'antd'
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { useState, useEffect, useMemo } from 'react'
 import { useAuthStore } from '@/stores/authStore'
+import LogoPng from '@/assets/logo.png'
 import {
   DashboardOutlined,
   UserOutlined,
@@ -28,14 +29,21 @@ export default function AppLayout() {
   // ✅ 菜单配置（以后只需要在这里添加新菜单，自动适配所有逻辑）
   const menuItems = [
     { key: '/dashboard', icon: <DashboardOutlined />, label: '仪表盘' },
-    { key: '/admin-users', icon: <UserOutlined />, label: '后台用户' },
-    { key: '/roles', icon: <SettingOutlined />, label: '角色管理' },
     { key: '/users', icon: <TeamOutlined />, label: '小程序用户' },
     { key: '/posts', icon: <FileTextOutlined />, label: '攻略审核' },
     { key: '/partners', icon: <UsergroupAddOutlined />, label: '官方搭子' },
     { key: '/recommendations', icon: <StarOutlined />, label: '推荐管理' },
     { key: '/complaints', icon: <WarningOutlined />, label: '投诉管理' },
     { key: '/messages', icon: <MessageOutlined />, label: '消息管理' },
+    {
+      key: '/system',
+      icon: <SettingOutlined />,
+      label: '系统管理',
+      children: [
+        { key: '/system/admin-users', label: '后台用户' },
+        { key: '/system/roles', label: '角色管理' },
+      ],
+    },
   ]
 
   const userMenu = [
@@ -101,8 +109,12 @@ export default function AppLayout() {
       {/* 左侧侧边栏 */}
       <Sider theme="light" width={200} className="shadow-md">
         {/* Logo 区域 */}
-        <div className="h-12 bg-primary m-4 rounded flex items-center justify-center text-white font-semibold">
-          后台管理系统
+        <div className="h-12 bg-primary m-4 rounded flex items-center justify-center gap-2 text-white font-semibold">
+          <img src={LogoPng} alt="logo" className="h-8 w-8 rounded object-cover" />
+          <div className='leading-[1]'>
+            <span>后台管理系统</span>
+            <p className='!mt-1.5 text-[11px]'>邻刻走 · LinkGo</p>
+          </div>
         </div>
 
         {/* 菜单 */}
