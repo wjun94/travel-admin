@@ -1,7 +1,41 @@
 import { useEffect, useState } from 'react';
 import { Card, Col, Row, Statistic, Spin } from 'antd';
-import { UserOutlined, FileTextOutlined, TeamOutlined } from '@ant-design/icons';
+import {
+  UserOutlined,
+  FileTextOutlined,
+  TeamOutlined,
+  ScheduleOutlined,
+  CommentOutlined,
+  StarOutlined,
+  UsergroupAddOutlined,
+  WarningOutlined,
+} from '@ant-design/icons';
 import { getDashboardData, DashboardData } from '@/api/dashboard';
+
+// 8 个统计维度配置（key 对应后端返回字段）
+const DIMENSIONS: {
+  key: keyof DashboardData;
+  label: string;
+  icon: React.ReactNode;
+  color: string;
+  bg: string;
+}[] = [
+  { key: 'user', label: '用户', icon: <UserOutlined />, color: '#1677ff', bg: '#f0f7ff' },
+  { key: 'guide', label: '攻略', icon: <FileTextOutlined />, color: '#52c41a', bg: '#f0fff4' },
+  { key: 'partner', label: '搭子', icon: <TeamOutlined />, color: '#fa8c16', bg: '#fff7e6' },
+  { key: 'trip', label: '行程', icon: <ScheduleOutlined />, color: '#722ed1', bg: '#f9f0ff' },
+  { key: 'comment', label: '评论', icon: <CommentOutlined />, color: '#eb2f96', bg: '#fff0f6' },
+  { key: 'favorite', label: '收藏', icon: <StarOutlined />, color: '#faad14', bg: '#fffbe6' },
+  { key: 'application', label: '搭子申请', icon: <UsergroupAddOutlined />, color: '#13c2c2', bg: '#e6fffb' },
+  { key: 'complaint', label: '投诉', icon: <WarningOutlined />, color: '#f5222d', bg: '#fff1f0' },
+];
+
+// 时间段卡片（field 对应 DimensionCounts 字段）
+const PERIODS: { title: string; field: 'today' | 'week' | 'month' }[] = [
+  { title: '今日数据', field: 'today' },
+  { title: '本周数据', field: 'week' },
+  { title: '本月数据', field: 'month' },
+];
 
 const Dashboard = () => {
   const [data, setData] = useState<DashboardData | null>(null);
@@ -10,7 +44,7 @@ const Dashboard = () => {
   useEffect(() => {
     setLoading(true);
     getDashboardData()
-      .then(res => {
+      .then((res) => {
         setData(res?.data);
       })
       .catch(console.error)
@@ -19,60 +53,68 @@ const Dashboard = () => {
       });
   }, []);
 
-  // 统计卡片配置，方便后续扩展
-  const statisticList = [
-    {
-      title: '用户总数',
-      value: data?.userCount ?? 0,
-      icon: <UserOutlined />,
-      color: '#1677ff',
-      bgColor: '#f0f7ff'
-    },
-    {
-      title: '攻略总数',
-      value: data?.guideCount ?? 0,
-      icon: <FileTextOutlined />,
-      color: '#52c41a',
-      bgColor: '#f0fff4'
-    },
-    {
-      title: '搭子总数',
-      value: data?.partnerCount ?? 0,
-      icon: <TeamOutlined />,
-      color: '#fa8c16',
-      bgColor: '#fff7e6'
-    }
-  ];
-
   return (
     <div style={{ padding: '24px' }}>
       <h2 style={{ marginBottom: '24px', fontSize: '22px', fontWeight: 600 }}>数据仪表盘</h2>
 
       <Spin spinning={loading} tip="数据加载中...">
+        {/* 8 个维度总数卡片 */}
         <Row gutter={[16, 16]}>
-          {statisticList.map((item, index) => (
-            <Col xs={24} sm={12} lg={8} key={index}>
+          {DIMENSIONS.map((d) => (
+            <Col xs={24} sm={12} lg={6} key={d.key}>
               <Card
                 hoverable
                 styles={{
                   body: {
-                    backgroundColor: item.bgColor,
-                    borderRadius: 8
-                  }
+                    backgroundColor: d.bg,
+                    borderRadius: 8,
+                  },
                 }}
               >
                 <Statistic
-                  title={item.title}
-                  value={item.value}
+                  title={`${d.label}总数`}
+                  value={data?.[d.key]?.total ?? 0}
                   styles={{
                     content: {
-                      color: item.color,
+                      color: d.color,
                       fontSize: 32,
                       fontWeight: 600,
                     },
                   }}
-                  prefix={<span style={{ fontSize: 20, color: item.color }}>{item.icon}</span>}
+                  prefix={<span style={{ fontSize: 20, color: d.color }}>{d.icon}</span>}
                 />
+              </Card>
+            </Col>
+          ))}
+        </Row>
+
+        {/* 今日 / 本周 / 本月 新增数据 */}
+        <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
+          {PERIODS.map((period) => (
+            <Col xs={24} lg={8} key={period.field}>
+              <Card title={period.title} size="small">
+                <Row gutter={[8, 12]}>
+                  {DIMENSIONS.map((d) => (
+                    <Col span={12} key={d.key}>
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          padding: '6px 10px',
+                          borderRadius: 6,
+                          backgroundColor: '#fafafa',
+                        }}
+                      >
+                        <span style={{ color: '#666', fontSize: 13, display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <span style={{ color: d.color }}>{d.icon}</span>
+                          {d.label}
+                        </span>
+                        <b style={{ color: d.color, fontSize: 18 }}>{data?.[d.key]?.[period.field] ?? 0}</b>
+                      </div>
+                    </Col>
+                  ))}
+                </Row>
               </Card>
             </Col>
           ))}
