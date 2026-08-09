@@ -13,6 +13,8 @@ import {
   StarOutlined,
   WarningOutlined,
   MessageOutlined,
+  ScheduleOutlined,
+  AuditOutlined,
   LogoutOutlined,
 } from '@ant-design/icons'
 
@@ -31,6 +33,8 @@ export default function AppLayout() {
     { key: '/dashboard', icon: <DashboardOutlined />, label: '仪表盘' },
     { key: '/users', icon: <TeamOutlined />, label: '小程序用户' },
     { key: '/posts', icon: <FileTextOutlined />, label: '攻略审核' },
+    { key: '/trips', icon: <ScheduleOutlined />, label: '行程审核' },
+    { key: '/partner-audit', icon: <AuditOutlined />, label: '搭子审核' },
     { key: '/partners', icon: <UsergroupAddOutlined />, label: '官方搭子' },
     { key: '/recommendations', icon: <StarOutlined />, label: '推荐管理' },
     { key: '/complaints', icon: <WarningOutlined />, label: '投诉管理' },

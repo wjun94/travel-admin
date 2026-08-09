@@ -8,7 +8,9 @@ import AdminUsers from '@/app/admin-users/page'
 import Roles from '@/app/roles/page'
 import Users from '@/app/users/page'
 import Posts from '@/app/posts/page'
+import Trips from '@/app/trips/page'
 import Partners from '@/app/partners/page'
+import PartnerAudit from '@/app/partner-audit/page'
 import Recommendations from '@/app/recommendations/page'
 import Complaints from '@/app/complaints/page'
 import Messages from '@/app/messages/page'
@@ -29,7 +31,9 @@ const router = createBrowserRouter([
       { path: '/system/roles', element: <Roles /> },
       { path: '/users', element: <Users /> },
       { path: '/posts', element: <Posts /> },
+      { path: '/trips', element: <Trips /> },
       { path: '/partners', element: <Partners /> },
+      { path: '/partner-audit', element: <PartnerAudit /> },
       { path: '/recommendations', element: <Recommendations /> },
       { path: '/complaints', element: <Complaints /> },
       { path: '/messages', element: <Messages /> },

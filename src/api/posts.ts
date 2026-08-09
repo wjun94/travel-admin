@@ -40,3 +40,66 @@ export const updatePostStatus = (id: string, status: number) =>
     method: 'PUT',
     data: { status },
   });
+/**
+ * 攻略每日行程板块
+ */
+export interface GuideSection {
+  id: string;
+  dayNumber: number;
+  date: string;
+  title: string;
+  items: GuideDayItem[];
+}
+
+/**
+ * 攻略行程项
+ */
+export interface GuideDayItem {
+  id: string;
+  sectionType: string;   // 板块类型：hotel/transport/food/spot/shop/activity/other
+  title: string;
+  description: string;
+  startTime: string;
+  endTime: string;
+  address: string;
+  images: string[];
+  needReservation: boolean;
+  ticketChannel: string;
+  ticketPrice: number | null;
+  transportMode: string;
+  startPoint: string;
+  endPoint: string;
+}
+
+/**
+ * 攻略详情（含每日行程）
+ */
+export interface GuideDetail {
+  authorName?: string;
+  authorAvatar?: string;
+  guide: Post & {
+    summary: string;
+    category?: string;
+    difficulty?: string;
+    bestSeason?: string;
+    recommendedDays?: number | null;
+    budgetMin?: number | null;
+    budgetMax?: number | null;
+    tags?: string;
+    crowdType?: string;
+    isOriginal?: number;
+    isOverseas?: number;
+    favoriteCount?: number;
+    commentCount?: number;
+  };
+  days: GuideSection[];
+}
+
+/**
+ * 获取攻略详情（含每日行程）
+ */
+export const getGuideDetail = (id: string) =>
+  request<GuideDetail>({
+    url: `/admin/guide/${id}`,
+    method: 'GET',
+  });

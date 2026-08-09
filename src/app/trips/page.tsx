@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react';
-import { Button, Tag, message, Drawer, Descriptions, Collapse, Spin, Divider } from 'antd';
+import { Button, message, Tag, Drawer, Descriptions, Collapse, Spin, Divider } from 'antd';
 import ProTable, { ProTableRef } from '@/components/ProTable';
 import { Image } from '@/components';
-import { getPosts, updatePostStatus, getGuideDetail, Post, GuideDetail } from '@/api/posts';
+import { getTrips, updateTripStatus, getTripDetail, Trip, TripDetail } from '@/api/trips';
 import dayjs from 'dayjs';
 
 const sectionTypeMap: Record<string, string> = {
@@ -25,19 +25,19 @@ const sectionTypeStyleMap: Record<string, { bg: string; color: string }> = {
 };
 
 const statusMap: Record<number, { label: string; color: string }> = {
-  0: { label: '草稿', color: 'default' },
-  1: { label: '已发布', color: 'green' },
-  2: { label: '已下架', color: 'red' },
+  1: { label: '草稿', color: 'default' },
+  2: { label: '已发布', color: 'green' },
+  3: { label: '已归档', color: 'blue' },
 };
 
-const PostsPage = () => {
+const TripsPage = () => {
   const tableRef = useRef<ProTableRef>(null);
   const [detailOpen, setDetailOpen] = useState(false);
   const [detailLoading, setDetailLoading] = useState(false);
-  const [detail, setDetail] = useState<GuideDetail | null>(null);
+  const [detail, setDetail] = useState<TripDetail | null>(null);
 
   const handleStatus = async (id: string, status: number) => {
-    await updatePostStatus(id, status);
+    await updateTripStatus(id, status);
     message.success('操作成功');
     tableRef.current?.handleRefresh();
   };
@@ -46,7 +46,7 @@ const PostsPage = () => {
     setDetailOpen(true);
     setDetailLoading(true);
     try {
-      const res = await getGuideDetail(id);
+      const res = await getTripDetail(id);
       setDetail(res.data);
     } catch (err) {
       message.error('获取详情失败');
@@ -65,36 +65,58 @@ const PostsPage = () => {
       ),
     },
     { title: '标题', dataIndex: 'title', ellipsis: true },
-    { title: '目的地', dataIndex: 'destination', width: 120 },
+    { title: '作者', dataIndex: 'authorName', width: 110, ellipsis: true },
+    {
+      title: '目的地',
+      dataIndex: 'destinations',
+      width: 140,
+      ellipsis: true,
+      render: (val: string[]) => (Array.isArray(val) && val.length ? val.join(' · ') : '-'),
+    },
+    {
+      title: '预算',
+      dataIndex: 'totalBudget',
+      width: 90,
+      render: (val: number) => (val ? `¥${val}` : '-'),
+    },
+    { title: '行程项', dataIndex: 'itemCount', width: 70 },
+    {
+      title: '数据',
+      width: 120,
+      render: (_: unknown, record: Trip) => `浏览 ${record.viewCount} · 赞 ${record.likeCount}`,
+    },
     {
       title: '状态',
       dataIndex: 'status',
-      width: 100,
-      render: (status: number) => (
-        <Tag color={statusMap[status]?.color}>{statusMap[status]?.label}</Tag>
-      ),
+      width: 90,
+      render: (status: number) => {
+        const info = statusMap[status];
+        return <Tag color={info?.color}>{info?.label}</Tag>;
+      },
     },
-    { title: '浏览量', dataIndex: 'viewCount', width: 90 },
-    { title: '点赞', dataIndex: 'likeCount', width: 80 },
     {
       title: '创建时间',
       dataIndex: 'createdAt',
-      width: 170,
+      width: 160,
       render: (val: string) => (val ? dayjs(val).format('YYYY-MM-DD HH:mm') : '-'),
     },
     {
       title: '操作',
-      width: 200,
-      render: (_: any, record: Post) => (
+      width: 260,
+      render: (_: any, record: Trip) => (
         <>
           <Button type="link" onClick={() => handleViewDetail(record.id)}>
             详情
           </Button>
-          {record.status !== 1 && (
-            <Button type="link" onClick={() => handleStatus(record.id, 1)}>发布</Button>
-          )}
           {record.status !== 2 && (
-            <Button type="link" danger onClick={() => handleStatus(record.id, 2)}>下架</Button>
+            <Button type="link" onClick={() => handleStatus(record.id, 2)}>
+              发布
+            </Button>
+          )}
+          {record.status !== 1 && (
+            <Button type="link" danger onClick={() => handleStatus(record.id, 1)}>
+              下架
+            </Button>
           )}
         </>
       ),
@@ -154,25 +176,26 @@ const PostsPage = () => {
     <>
       <ProTable
         ref={tableRef}
-        title="攻略审核"
+        title="行程审核"
         rowKey="id"
         columns={columns}
-        request={getPosts}
+        request={getTrips}
+        scroll={{ x: 1300 }}
         searchFields={[
+          { name: 'keyword', label: '关键词', type: 'input', placeholder: '标题/目的地' },
           {
             name: 'status',
             label: '状态',
             type: 'select',
             options: [
-              { value: 0, label: '草稿' },
-              { value: 1, label: '已发布' },
-              { value: 2, label: '已下架' },
+              { value: 1, label: '草稿' },
+              { value: 2, label: '已发布' },
             ],
           },
         ]}
       />
 
-      <Drawer title="攻略详情" width={640} open={detailOpen} onClose={() => setDetailOpen(false)}>
+      <Drawer title="行程详情" width={640} open={detailOpen} onClose={() => setDetailOpen(false)}>
         {detailLoading ? (
           <div style={{ textAlign: 'center', padding: 60 }}>
             <Spin />
@@ -180,47 +203,37 @@ const PostsPage = () => {
         ) : (
           detail && (
             <div>
-              {detail.guide.coverImage && (
+              {detail.coverImage && (
                 <Image
-                  src={detail.guide.coverImage}
+                  src={detail.coverImage}
                   style={{ width: '100%', height: 200, objectFit: 'cover', borderRadius: 8 }}
                 />
               )}
-              <h3 style={{ margin: '12px 0 4px', fontSize: 18 }}>{detail.guide.title}</h3>
-              <Tag color={statusMap[detail.guide.status]?.color}>
-                {statusMap[detail.guide.status]?.label}
-              </Tag>
+              <h3 style={{ margin: '12px 0 4px', fontSize: 18 }}>{detail.title}</h3>
+              <Tag color={statusMap[detail.status]?.color}>{statusMap[detail.status]?.label}</Tag>
               <Descriptions size="small" column={2} style={{ marginTop: 12 }}>
                 <Descriptions.Item label="作者">{detail.authorName || '-'}</Descriptions.Item>
-                <Descriptions.Item label="目的地">{detail.guide.destination || '-'}</Descriptions.Item>
-                <Descriptions.Item label="难度">{detail.guide.difficulty || '-'}</Descriptions.Item>
-                <Descriptions.Item label="建议天数">{detail.guide.recommendedDays ?? '-'}</Descriptions.Item>
-                <Descriptions.Item label="最佳季节">{detail.guide.bestSeason || '-'}</Descriptions.Item>
-                <Descriptions.Item label="预算">
-                  {detail.guide.budgetMin != null && detail.guide.budgetMax != null
-                    ? `¥${detail.guide.budgetMin} - ¥${detail.guide.budgetMax}`
+                <Descriptions.Item label="目的地">
+                  {Array.isArray(detail.destinations) && detail.destinations.length
+                    ? detail.destinations.join(' · ')
                     : '-'}
                 </Descriptions.Item>
-                <Descriptions.Item label="适合人群">{detail.guide.crowdType || '-'}</Descriptions.Item>
-                <Descriptions.Item label="浏览量">{detail.guide.viewCount}</Descriptions.Item>
-                <Descriptions.Item label="赞/藏/评">
-                  {detail.guide.likeCount} / {detail.guide.favoriteCount ?? 0} / {detail.guide.commentCount ?? 0}
+                <Descriptions.Item label="预算">
+                  {detail.totalBudget ? `¥${detail.totalBudget}` : '-'}
                 </Descriptions.Item>
+                <Descriptions.Item label="境内/境外">
+                  {detail.isOverseas === 1 ? '境外' : '国内'}
+                </Descriptions.Item>
+                <Descriptions.Item label="可见性">{detail.isPublic === 1 ? '公开' : '私密'}</Descriptions.Item>
+                <Descriptions.Item label="行程项数">{detail.itemCount}</Descriptions.Item>
+                <Descriptions.Item label="浏览量">{detail.viewCount}</Descriptions.Item>
+                <Descriptions.Item label="点赞">{detail.likeCount}</Descriptions.Item>
                 <Descriptions.Item label="创建时间">
-                  {dayjs(detail.guide.createdAt).format('YYYY-MM-DD HH:mm')}
+                  {dayjs(detail.createdAt).format('YYYY-MM-DD HH:mm')}
                 </Descriptions.Item>
               </Descriptions>
-              {detail.guide.tags && (
-                <div style={{ margin: '8px 0' }}>
-                  {(JSON.parse(detail.guide.tags) as string[]).map((t) => (
-                    <Tag key={t}>{t}</Tag>
-                  ))}
-                </div>
-              )}
-              {detail.guide.summary && (
-                <p style={{ marginTop: 8, color: '#666' }}>{detail.guide.summary}</p>
-              )}
-              {detail.days.length > 0 && (
+              {detail.summary && <p style={{ marginTop: 8, color: '#666' }}>{detail.summary}</p>}
+              {detail.days && detail.days.length > 0 && (
                 <>
                   <Divider style={{ margin: '12px 0' }}>行程安排</Divider>
                   <Collapse
@@ -240,4 +253,4 @@ const PostsPage = () => {
   );
 };
 
-export default PostsPage;
+export default TripsPage;
