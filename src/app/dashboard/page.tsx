@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card, Col, Row, Statistic, Spin } from 'antd';
+import { Card, Col, Row, Statistic, Spin, Segmented } from 'antd';
 import {
   UserOutlined,
   FileTextOutlined,
@@ -30,16 +30,17 @@ const DIMENSIONS: {
   { key: 'complaint', label: '投诉', icon: <WarningOutlined />, color: '#f5222d', bg: '#fff1f0' },
 ];
 
-// 时间段卡片（field 对应 DimensionCounts 字段）
-const PERIODS: { title: string; field: 'today' | 'week' | 'month' }[] = [
-  { title: '今日数据', field: 'today' },
-  { title: '本周数据', field: 'week' },
-  { title: '本月数据', field: 'month' },
+// 时间段切换选项（field 对应 DimensionCounts 字段）
+const PERIODS: { key: 'today' | 'week' | 'month'; label: string }[] = [
+  { key: 'today', label: '今日数据' },
+  { key: 'week', label: '本周数据' },
+  { key: 'month', label: '本月数据' },
 ];
 
 const Dashboard = () => {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [period, setPeriod] = useState<'today' | 'week' | 'month'>('today');
 
   useEffect(() => {
     setLoading(true);
@@ -88,37 +89,42 @@ const Dashboard = () => {
           ))}
         </Row>
 
-        {/* 今日 / 本周 / 本月 新增数据 */}
-        <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
-          {PERIODS.map((period) => (
-            <Col xs={24} lg={8} key={period.field}>
-              <Card title={period.title} size="small">
-                <Row gutter={[8, 12]}>
-                  {DIMENSIONS.map((d) => (
-                    <Col span={12} key={d.key}>
-                      <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          padding: '6px 10px',
-                          borderRadius: 6,
-                          backgroundColor: '#fafafa',
-                        }}
-                      >
-                        <span style={{ color: '#666', fontSize: 13, display: 'flex', alignItems: 'center', gap: 6 }}>
-                          <span style={{ color: d.color }}>{d.icon}</span>
-                          {d.label}
-                        </span>
-                        <b style={{ color: d.color, fontSize: 18 }}>{data?.[d.key]?.[period.field] ?? 0}</b>
-                      </div>
-                    </Col>
-                  ))}
-                </Row>
-              </Card>
-            </Col>
-          ))}
-        </Row>
+        {/* 新增数据：今日 / 本周 / 本月 切换 */}
+        <Card
+          title="新增数据"
+          size="small"
+          style={{ marginTop: 16 }}
+          extra={
+            <Segmented
+              options={PERIODS.map((p) => ({ label: p.label, value: p.key }))}
+              value={period}
+              onChange={(v) => setPeriod(v as 'today' | 'week' | 'month')}
+            />
+          }
+        >
+          <Row gutter={[8, 12]}>
+            {DIMENSIONS.map((d) => (
+              <Col xs={12} md={6} key={d.key}>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '8px 12px',
+                    borderRadius: 6,
+                    backgroundColor: '#fafafa',
+                  }}
+                >
+                  <span style={{ color: '#666', fontSize: 13, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ color: d.color }}>{d.icon}</span>
+                    {d.label}
+                  </span>
+                  <b style={{ color: d.color, fontSize: 18 }}>{data?.[d.key]?.[period] ?? 0}</b>
+                </div>
+              </Col>
+            ))}
+          </Row>
+        </Card>
       </Spin>
     </div>
   );
