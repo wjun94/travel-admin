@@ -4,6 +4,7 @@ import { useRequest } from 'ahooks'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 import { loginApi, LoginParams } from '@/api/auth'
+import LogoPng from '@/assets/logo.png'
 
 export default function Login() {
   const [form] = Form.useForm<LoginParams>()
@@ -32,7 +33,14 @@ export default function Login() {
       background: '#f0f2f5'
     }}>
       <div style={{ width: 400, padding: 32, background: '#fff', borderRadius: 8 }}>
-        <h2 style={{ textAlign: 'center', marginBottom: 24 }}>旅游后台管理系统</h2>
+        {/* 品牌 Logo 区域（与侧边栏一致） */}
+        <div className="flex items-center justify-center gap-2 mb-6 text-[#1c1917]">
+          <img src={LogoPng} alt="logo" className="w-8 h-8 rounded object-cover" />
+          <div className="leading-none">
+            <div className="font-semibold text-base">后台管理系统</div>
+            <p className="mt-1.5 text-[11px] font-bold text-[#292524]">邻刻走 · LinkGo</p>
+          </div>
+        </div>
 
         <Form
           form={form}
