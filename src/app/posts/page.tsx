@@ -220,7 +220,7 @@ const PostsPage = () => {
               {detail.guide.summary && (
                 <p style={{ marginTop: 8, color: '#666' }}>{detail.guide.summary}</p>
               )}
-              {detail.days.length > 0 && (
+              {detail.days?.length > 0 && (
                 <>
                   <Divider style={{ margin: '12px 0' }}>行程安排</Divider>
                   <Collapse

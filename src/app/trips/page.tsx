@@ -71,7 +71,7 @@ const TripsPage = () => {
       dataIndex: 'destinations',
       width: 140,
       ellipsis: true,
-      render: (val: string[]) => (Array.isArray(val) && val.length ? val.join(' · ') : '-'),
+      render: (val: string[]) => (Array.isArray(val) && val.length ? val.filter(Boolean).join(' · ') : '-'),
     },
     {
       title: '预算',
@@ -215,7 +215,7 @@ const TripsPage = () => {
                 <Descriptions.Item label="作者">{detail.authorName || '-'}</Descriptions.Item>
                 <Descriptions.Item label="目的地">
                   {Array.isArray(detail.destinations) && detail.destinations.length
-                    ? detail.destinations.join(' · ')
+                    ? detail.destinations.filter(Boolean).join(' · ')
                     : '-'}
                 </Descriptions.Item>
                 <Descriptions.Item label="预算">
