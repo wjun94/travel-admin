@@ -180,6 +180,12 @@ const PartnerAuditPage = () => {
       render: (_: unknown, record: Partner) => `${record.currentMembers}/${record.maxMembers}`,
     },
     {
+      title: '数据',
+      dataIndex: 'viewCount',
+      width: 130,
+      render: (_: unknown, record: Partner) => `浏览 ${record.viewCount} · 赞 ${record.likeCount}`,
+    },
+    {
       title: '状态',
       dataIndex: 'status',
       width: 90,
@@ -187,12 +193,6 @@ const PartnerAuditPage = () => {
         const info = statusMap[status];
         return <Tag color={info?.color}>{info?.label}</Tag>;
       },
-    },
-    {
-      title: '数据',
-      dataIndex: 'viewCount',
-      width: 130,
-      render: (_: unknown, record: Partner) => `浏览 ${record.viewCount} · 赞 ${record.likeCount}`,
     },
     {
       title: '创建时间',

@@ -100,18 +100,18 @@ const PostsPage = () => {
       ),
     },
     {
+      title: '数据',
+      dataIndex: 'viewCount',
+      width: 130,
+      render: (_: unknown, record: Post) => `浏览 ${record.viewCount} · 赞 ${record.likeCount}`,
+    },
+    {
       title: '状态',
       dataIndex: 'status',
       width: 100,
       render: (status: number) => (
         <Tag color={statusMap[status]?.color}>{statusMap[status]?.label}</Tag>
       ),
-    },
-    {
-      title: '数据',
-      dataIndex: 'viewCount',
-      width: 130,
-      render: (_: unknown, record: Post) => `浏览 ${record.viewCount} · 赞 ${record.likeCount}`,
     },
     {
       title: '创建时间',
