@@ -119,17 +119,48 @@ const PartnerAuditPage = () => {
 
   const columns = [
     {
-      title: '封面',
-      dataIndex: 'cover',
-      width: 90,
-      render: (src: string) =>
-        src ? (
-          <Image src={coverUrl(src)} style={{ width: 64, height: 44, objectFit: 'cover', borderRadius: 4 }} />
-        ) : (
-          '-'
-        ),
+      title: '信息',
+      key: 'info',
+      width: 240,
+      render: (_: unknown, record: Partner) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+          {record.cover ? (
+            <Image
+              src={coverUrl(record.cover)}
+              style={{ width: 42, height: 42, objectFit: 'cover', borderRadius: 4, flexShrink: 0 }}
+            />
+          ) : (
+            <div style={{ width: 42, height: 42, borderRadius: 4, background: '#f5f5f5', flexShrink: 0 }} />
+          )}
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <div
+              style={{
+                fontSize: 14,
+                fontWeight: 500,
+                color: '#1f2937',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {record.title}
+            </div>
+            <div
+              style={{
+                fontSize: 12,
+                color: '#9ca3af',
+                marginTop: 2,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {record.destination || '-'}
+            </div>
+          </div>
+        </div>
+      ),
     },
-    { title: '标题', dataIndex: 'title', ellipsis: true },
     {
       title: '类型',
       dataIndex: 'type',
@@ -142,7 +173,6 @@ const PartnerAuditPage = () => {
       width: 80,
       render: (v: string) => (v ? <Tag color="blue">{v}</Tag> : '-'),
     },
-    { title: '目的地', dataIndex: 'destination', width: 110, ellipsis: true },
     { title: '作者', dataIndex: 'authorName', width: 110, ellipsis: true, render: (v: string) => v || '-' },
     {
       title: '人数',
@@ -157,6 +187,12 @@ const PartnerAuditPage = () => {
         const info = statusMap[status];
         return <Tag color={info?.color}>{info?.label}</Tag>;
       },
+    },
+    {
+      title: '数据',
+      dataIndex: 'viewCount',
+      width: 130,
+      render: (_: unknown, record: Partner) => `浏览 ${record.viewCount} · 赞 ${record.likeCount}`,
     },
     {
       title: '创建时间',

@@ -57,15 +57,48 @@ const PostsPage = () => {
 
   const columns = [
     {
-      title: '封面',
-      dataIndex: 'coverImage',
-      width: 90,
-      render: (src: string) => (
-        <Image src={src} style={{ width: 64, height: 44, objectFit: 'cover', borderRadius: 4 }} />
+      title: '信息',
+      key: 'info',
+      width: 240,
+      render: (_: unknown, record: Post) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+          {record.coverImage ? (
+            <Image
+              src={record.coverImage}
+              style={{ width: 42, height: 42, objectFit: 'cover', borderRadius: 4, flexShrink: 0 }}
+            />
+          ) : (
+            <div style={{ width: 42, height: 42, borderRadius: 4, background: '#f5f5f5', flexShrink: 0 }} />
+          )}
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <div
+              style={{
+                fontSize: 14,
+                fontWeight: 500,
+                color: '#1f2937',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {record.title}
+            </div>
+            <div
+              style={{
+                fontSize: 12,
+                color: '#9ca3af',
+                marginTop: 2,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {record.destination || '-'}
+            </div>
+          </div>
+        </div>
       ),
     },
-    { title: '标题', dataIndex: 'title', ellipsis: true },
-    { title: '目的地', dataIndex: 'destination', width: 120 },
     {
       title: '状态',
       dataIndex: 'status',
@@ -74,8 +107,12 @@ const PostsPage = () => {
         <Tag color={statusMap[status]?.color}>{statusMap[status]?.label}</Tag>
       ),
     },
-    { title: '浏览量', dataIndex: 'viewCount', width: 90 },
-    { title: '点赞', dataIndex: 'likeCount', width: 80 },
+    {
+      title: '数据',
+      dataIndex: 'viewCount',
+      width: 130,
+      render: (_: unknown, record: Post) => `浏览 ${record.viewCount} · 赞 ${record.likeCount}`,
+    },
     {
       title: '创建时间',
       dataIndex: 'createdAt',

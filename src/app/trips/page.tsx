@@ -57,22 +57,51 @@ const TripsPage = () => {
 
   const columns = [
     {
-      title: '封面',
-      dataIndex: 'coverImage',
-      width: 90,
-      render: (src: string) => (
-        <Image src={src} style={{ width: 64, height: 44, objectFit: 'cover', borderRadius: 4 }} />
+      title: '信息',
+      key: 'info',
+      width: 240,
+      render: (_: unknown, record: Trip) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+          {record.coverImage ? (
+            <Image
+              src={record.coverImage}
+              style={{ width: 42, height: 42, objectFit: 'cover', borderRadius: 4, flexShrink: 0 }}
+            />
+          ) : (
+            <div style={{ width: 42, height: 42, borderRadius: 4, background: '#f5f5f5', flexShrink: 0 }} />
+          )}
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <div
+              style={{
+                fontSize: 14,
+                fontWeight: 500,
+                color: '#1f2937',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {record.title}
+            </div>
+            <div
+              style={{
+                fontSize: 12,
+                color: '#9ca3af',
+                marginTop: 2,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {Array.isArray(record.destinations) && record.destinations.length
+                ? record.destinations.filter(Boolean).join(' · ')
+                : '-'}
+            </div>
+          </div>
+        </div>
       ),
     },
-    { title: '标题', dataIndex: 'title', ellipsis: true },
     { title: '作者', dataIndex: 'authorName', width: 110, ellipsis: true },
-    {
-      title: '目的地',
-      dataIndex: 'destinations',
-      width: 140,
-      ellipsis: true,
-      render: (val: string[]) => (Array.isArray(val) && val.length ? val.filter(Boolean).join(' · ') : '-'),
-    },
     {
       title: '预算',
       dataIndex: 'totalBudget',

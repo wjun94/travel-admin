@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { Select, Tag, message, Avatar } from 'antd';
+import { Select, Tag, message, Avatar, Tooltip } from 'antd';
 import ProTable, { ProTableRef } from '@/components/ProTable';
 import { Image } from '@/components';
 import { getWxUsers, updateWxUserRole, WxUser } from '@/api/users';
@@ -21,7 +21,17 @@ const UsersPage = () => {
   };
 
   const columns = [
-    { title: 'ID', dataIndex: 'id', width: 80 },
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      width: 220,
+      ellipsis: { showTitle: false },
+      render: (id: string) => (
+        <Tooltip title={id} placement="topLeft">
+          <span>{id}</span>
+        </Tooltip>
+      ),
+    },
     {
       title: '头像',
       dataIndex: 'avatarUrl',

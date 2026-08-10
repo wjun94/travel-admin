@@ -1,8 +1,33 @@
 import { useRef, useState } from 'react';
-import { Button, Modal, Form, Input, Tag, Popover, message } from 'antd';
+import { Button, Modal, Form, Input, Tag, Popover, Checkbox, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import ProTable, { ProTableRef } from '@/components/ProTable';
 import { getRoles, createRole, updateRole, deleteRole, Role } from '@/api/roles';
+
+// 权限清单：key 与后端权限标识一致
+const PERMISSION_OPTIONS = [
+  { label: '全部权限（超级管理员）', value: '*' },
+  { label: '仪表盘', value: 'dashboard' },
+  { label: '小程序用户', value: 'users_manage' },
+  { label: '攻略管理', value: 'guides_manage' },
+  { label: '攻略审核', value: 'posts_manage' },
+  { label: '行程审核', value: 'trips_manage' },
+  { label: '搭子审核', value: 'partner_audit' },
+  { label: '官方搭子', value: 'partners_manage' },
+  { label: '推荐管理', value: 'recommendations_manage' },
+  { label: '投诉管理', value: 'complaints_manage' },
+  { label: '消息管理', value: 'messages_manage' },
+  { label: '后台用户', value: 'admin_users_manage' },
+  { label: '角色管理', value: 'roles_manage' },
+];
+
+// key → 中文名映射
+const PERMISSION_LABEL_MAP: Record<string, string> = Object.fromEntries(
+  PERMISSION_OPTIONS.map((p) => [p.value, p.label])
+);
+
+// 权限key转为中文名，未知key回显原样
+const permLabel = (key: string) => PERMISSION_LABEL_MAP[key] || key;
 
 const RolesPage = () => {
   const tableRef = useRef<ProTableRef>(null);
@@ -18,7 +43,8 @@ const RolesPage = () => {
 
   const handleEdit = (record: Role) => {
     setEditingRole(record);
-    form.setFieldsValue(record);
+    // 权限JSON字符串解析为数组回填勾选
+    form.setFieldsValue({ ...record, permissions: parsePerms(record.permissions) });
     setModalVisible(true);
   };
 
@@ -36,11 +62,13 @@ const RolesPage = () => {
 
   const handleModalOk = async () => {
     const values = await form.validateFields();
+    // 勾选的权限数组转为JSON字符串提交
+    const payload = { ...values, permissions: JSON.stringify(values.permissions || []) };
     if (editingRole) {
-      await updateRole(editingRole.id, values);
+      await updateRole(editingRole.id, payload);
       message.success('更新成功');
     } else {
-      await createRole(values);
+      await createRole(payload);
       message.success('创建成功');
     }
     setModalVisible(false);
@@ -73,13 +101,13 @@ const RolesPage = () => {
             title="权限列表"
             content={
               <div style={{ maxWidth: 300 }}>
-                {list.map((p) => <Tag key={p} style={{ marginBottom: 4 }}>{p}</Tag>)}
+                {list.map((p) => <Tag key={p} style={{ marginBottom: 4 }}>{permLabel(p)}</Tag>)}
               </div>
             }
             trigger="hover"
           >
             <span>
-              {list.slice(0, 3).map((p) => <Tag key={p} color="blue" style={{ marginInlineEnd: 4 }}>{p}</Tag>)}
+              {list.slice(0, 3).map((p) => <Tag key={p} color="blue" style={{ marginInlineEnd: 4 }}>{permLabel(p)}</Tag>)}
               {list.length > 3 && <Tag>+{list.length - 3}</Tag>}
             </span>
           </Popover>
@@ -121,8 +149,8 @@ const RolesPage = () => {
           <Form.Item name="description" label="描述">
             <Input />
           </Form.Item>
-          <Form.Item name="permissions" label="权限JSON">
-            <Input.TextArea rows={4} placeholder='例如 ["dashboard","users_manage"]' />
+          <Form.Item name="permissions" label="权限" rules={[{ required: true, message: '请勾选权限' }]}>
+            <Checkbox.Group options={PERMISSION_OPTIONS} />
           </Form.Item>
         </Form>
       </Modal>
