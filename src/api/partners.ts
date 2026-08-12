@@ -11,7 +11,7 @@ export interface PartnerParams {
   onlineLink?: string;
   startDate: string;
   endDate?: string;
-  days: number;
+  days?: Partial<PartnerDay>[];   // 行程日骨架（天数由数组长度派生，后端级联保存）
   travelTags?: string;        // 逗号分隔，如：自驾,徒步,美食
   desc?: string;
   requirement?: string;
@@ -51,7 +51,7 @@ export interface Partner {
   onlineLink: string;
   startDate: string;
   endDate: string;
-  days: number;
+  dayCount: number;           // 出行天数（由行程日列表长度派生）
   travelTags: string;     // 逗号分隔
   tags: string;           // 多选标签 JSON 数组字符串
   desc: string;
@@ -110,7 +110,33 @@ export const createOfficialPartner = (data: PartnerParams) =>
     data,
   });
 
-import { TripDay } from './trips';
+/** 搭子行程日（与后端 model.PartnerDay 对齐） */
+export interface PartnerDay {
+  id: string;
+  partnerId: string;
+  dayNumber: number;
+  date: string;
+  title: string;
+  items: PartnerDayItem[];
+}
+
+/** 搭子行程项（与后端 model.PartnerDayItem 对齐） */
+export interface PartnerDayItem {
+  id: string;
+  sectionType: string;   // 板块类型：attraction/transport/hotel/food/shopping/tips
+  title: string;
+  description: string;
+  startTime: string;
+  endTime: string;
+  address: string;
+  images: string[];
+  needReservation: boolean;
+  ticketChannel: string;
+  ticketPrice: number | null;
+  transportMode: string;
+  startPoint: string;
+  endPoint: string;
+}
 
 /**
  * 搭子详情（含关联行程安排）
@@ -126,7 +152,7 @@ export interface PartnerDetail {
     tags: string;
     richDesc?: string;
   };
-  days: TripDay[];
+  days: PartnerDay[];
 }
 
 /**

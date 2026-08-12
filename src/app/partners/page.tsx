@@ -28,10 +28,11 @@ import dayjs from 'dayjs';
 const STATIC_DOMAIN = import.meta.env.VITE_STATIC_BASE_URL;
 
 // 表单字段类型：DatePicker 返回 Dayjs，与接口参数字符串做区分
-interface PartnerForm extends Omit<PartnerParams, 'startDate' | 'endDate' | 'travelTags'> {
+interface PartnerForm extends Omit<PartnerParams, 'startDate' | 'endDate' | 'travelTags' | 'days'> {
   startDate: Dayjs;
   endDate?: Dayjs;
   travelTags?: string[];
+  totalDays?: number; // 表单输入天数，提交时生成行程日骨架 days
 }
 
 const sectionTypeMap: Record<string, string> = {
@@ -200,8 +201,11 @@ const PartnersPage = () => {
       const values = await form.validateFields();
       setSubmitting(true);
 
+      const { totalDays, ...rest } = values;
       const payload: PartnerParams = {
-        ...values,
+        ...rest,
+        // 天数 → 行程日骨架数组（后端级联保存，天数由数组长度派生）
+        days: Array.from({ length: totalDays || 0 }, (_, i) => ({ dayNumber: i + 1 })),
         // 后端 *time.Time 需要 RFC3339 格式，不能用 YYYY-MM-DD
         startDate: dayjs(values.startDate).toISOString(),
         endDate: values.endDate ? dayjs(values.endDate).toISOString() : undefined,
@@ -320,7 +324,7 @@ const PartnersPage = () => {
       width: 110,
       render: (val: string) => (val ? dayjs(val).format('YYYY-MM-DD') : '-'),
     },
-    { title: '天数', dataIndex: 'days', width: 60 },
+    { title: '天数', dataIndex: 'dayCount', width: 60 },
     {
       title: '人数',
       width: 90,
@@ -493,7 +497,7 @@ const PartnersPage = () => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="days"
+                name="totalDays"
                 label="天数"
                 rules={[{ required: true, message: '请输入行程天数' }]}
               >
@@ -677,7 +681,7 @@ const PartnersPage = () => {
                 <Descriptions.Item label="结束日期">
                   {detail.partner.endDate ? dayjs(detail.partner.endDate).format('YYYY-MM-DD') : '-'}
                 </Descriptions.Item>
-                <Descriptions.Item label="天数">{detail.partner.days}</Descriptions.Item>
+                <Descriptions.Item label="天数">{detail.days?.length || 0}</Descriptions.Item>
                 <Descriptions.Item label="人数">
                   {detail.partner.currentMembers}/{detail.partner.maxMembers}
                   {detail.partner.minMembers > 0 ? `（最小 ${detail.partner.minMembers}）` : ''}

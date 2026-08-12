@@ -294,7 +294,7 @@ const PartnerAuditPage = () => {
                 <Descriptions.Item label="结束日期">
                   {detail.partner.endDate ? dayjs(detail.partner.endDate).format('YYYY-MM-DD') : '-'}
                 </Descriptions.Item>
-                <Descriptions.Item label="天数">{detail.partner.days}</Descriptions.Item>
+                <Descriptions.Item label="天数">{detail.days?.length || 0}</Descriptions.Item>
                 <Descriptions.Item label="人数">
                   {detail.partner.currentMembers}/{detail.partner.maxMembers}
                   {detail.partner.minMembers > 0 ? `（最小 ${detail.partner.minMembers}）` : ''}
