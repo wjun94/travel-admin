@@ -8,6 +8,7 @@ export interface WxUser {
   id: string;
   nickname: string;
   avatarUrl: string;
+  gender: string;  // 性别：unknown未知 male男 female女
   phone: string;
   role: number;   // 0普通 1领队 2管理员
   createdAt: string;

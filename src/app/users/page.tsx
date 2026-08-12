@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { Select, Tag, message, Avatar, Tooltip } from 'antd';
+import { ManOutlined, WomanOutlined } from '@ant-design/icons';
 import ProTable, { ProTableRef } from '@/components/ProTable';
 import { Image } from '@/components';
 import { getWxUsers, updateWxUserRole, WxUser } from '@/api/users';
@@ -45,6 +46,28 @@ const UsersPage = () => {
       ),
     },
     { title: '昵称', dataIndex: 'nickname', ellipsis: true },
+    {
+      title: '性别',
+      dataIndex: 'gender',
+      width: 80,
+      render: (gender: string) => {
+        if (gender === 'male') {
+          return (
+            <span>
+              <ManOutlined style={{ color: '#1677ff' }} /> 男
+            </span>
+          );
+        }
+        if (gender === 'female') {
+          return (
+            <span>
+              <WomanOutlined style={{ color: '#eb2f96' }} /> 女
+            </span>
+          );
+        }
+        return <span style={{ color: '#999' }}>未知</span>;
+      },
+    },
     {
       title: '手机号',
       dataIndex: 'phone',
