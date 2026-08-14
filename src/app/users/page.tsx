@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { Select, Tag, message, Avatar, Tooltip } from 'antd';
+import { Select, Tag, message, Avatar, Typography } from 'antd';
 import { ManOutlined, WomanOutlined } from '@ant-design/icons';
 import ProTable, { ProTableRef } from '@/components/ProTable';
 import { Image } from '@/components';
@@ -23,64 +23,55 @@ const UsersPage = () => {
 
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      width: 220,
-      ellipsis: { showTitle: false },
-      render: (id: string) => (
-        <Tooltip title={id} placement="topLeft">
-          <span>{id}</span>
-        </Tooltip>
+      title: '用户',
+      key: 'info',
+      width: 260,
+      render: (_: unknown, record: WxUser) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+          {record.avatarUrl ? (
+            <Image
+              src={record.avatarUrl}
+              style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }}
+            />
+          ) : (
+            <Avatar style={{ flexShrink: 0 }}>{record.nickname?.[0] || '?'}</Avatar>
+          )}
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4, minWidth: 0 }}>
+              <span
+                style={{
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color: '#1f2937',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {record.nickname || '-'}
+              </span>
+              {record.gender === 'male' && <ManOutlined style={{ color: '#1677ff', flexShrink: 0 }} />}
+              {record.gender === 'female' && <WomanOutlined style={{ color: '#eb2f96', flexShrink: 0 }} />}
+              <Tag color={roleMap[record.role]?.color} style={{ flexShrink: 0, marginInlineEnd: 0 }}>
+                {roleMap[record.role]?.label}
+              </Tag>
+            </div>
+            <Typography.Text
+              copyable={{ text: record.id }}
+              ellipsis
+              style={{ fontSize: 12, color: '#9ca3af', marginTop: 2, display: 'block' }}
+            >
+              ID: {record.id}
+            </Typography.Text>
+          </div>
+        </div>
       ),
-    },
-    {
-      title: '头像',
-      dataIndex: 'avatarUrl',
-      width: 70,
-      render: (src: string, record: WxUser) => (
-        src ? (
-          <Image src={src} style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover' }} />
-        ) : (
-          <Avatar>{record.nickname?.[0] || '?'}</Avatar>
-        )
-      ),
-    },
-    { title: '昵称', dataIndex: 'nickname', ellipsis: true },
-    {
-      title: '性别',
-      dataIndex: 'gender',
-      width: 80,
-      render: (gender: string) => {
-        if (gender === 'male') {
-          return (
-            <span>
-              <ManOutlined style={{ color: '#1677ff' }} /> 男
-            </span>
-          );
-        }
-        if (gender === 'female') {
-          return (
-            <span>
-              <WomanOutlined style={{ color: '#eb2f96' }} /> 女
-            </span>
-          );
-        }
-        return <span style={{ color: '#999' }}>未知</span>;
-      },
     },
     {
       title: '手机号',
       dataIndex: 'phone',
       width: 130,
       render: (phone: string) => phone || '-',
-    },
-    {
-      title: '角色',
-      dataIndex: 'role',
-      width: 90,
-      render: (role: number) => (
-        <Tag color={roleMap[role]?.color}>{roleMap[role]?.label}</Tag>
-      ),
     },
     {
       title: '注册时间',

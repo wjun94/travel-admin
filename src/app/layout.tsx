@@ -8,12 +8,9 @@ import {
   UserOutlined,
   TeamOutlined,
   SettingOutlined,
-  FileTextOutlined,
-  UsergroupAddOutlined,
   StarOutlined,
   WarningOutlined,
   MessageOutlined,
-  ScheduleOutlined,
   AuditOutlined,
   LogoutOutlined,
 } from '@ant-design/icons'
@@ -31,14 +28,21 @@ export default function AppLayout() {
   // ✅ 菜单配置（以后只需要在这里添加新菜单，自动适配所有逻辑）
   const menuItems = [
     { key: '/dashboard', icon: <DashboardOutlined />, label: '仪表盘' },
-    { key: '/users', icon: <TeamOutlined />, label: '小程序用户' },
-    { key: '/posts', icon: <FileTextOutlined />, label: '攻略审核' },
-    { key: '/trips', icon: <ScheduleOutlined />, label: '行程审核' },
-    { key: '/partner-audit', icon: <AuditOutlined />, label: '搭子审核' },
-    { key: '/partners', icon: <UsergroupAddOutlined />, label: '官方搭子' },
+    {
+      key: '/content-audit',
+      icon: <AuditOutlined />,
+      label: '内容审核',
+      children: [
+        { key: '/posts', label: '攻略审核' },
+        { key: '/trips', label: '行程审核' },
+        { key: '/partner-audit', label: '搭子审核' },
+        { key: '/partners', label: '官方搭子' },
+      ],
+    },
     { key: '/recommendations', icon: <StarOutlined />, label: '推荐管理' },
     { key: '/complaints', icon: <WarningOutlined />, label: '投诉管理' },
     { key: '/messages', icon: <MessageOutlined />, label: '消息管理' },
+    { key: '/users', icon: <TeamOutlined />, label: '小程序用户' },
     {
       key: '/system',
       icon: <SettingOutlined />,
@@ -54,18 +58,14 @@ export default function AppLayout() {
     { key: 'logout', icon: <LogoutOutlined />, label: '退出登录', onClick: logout }
   ]
 
-  // ✅ 动态生成父菜单路由前缀映射（自动从menuItems读取）
+  // ✅ 动态生成父菜单子路由映射（自动从menuItems读取）
   const parentMenuMap = useMemo(() => {
-    const map: Record<string, string> = {} // key: 父菜单key, value: 路由前缀
+    const map: Record<string, string[]> = {} // key: 父菜单key, value: 子路由路径数组
 
     menuItems.forEach((item: any) => {
       // 只处理有子菜单的父菜单
       if (item.children && item.children.length > 0) {
-        // 从第一个子菜单路径自动提取父级前缀
-        // 例如：/settings/commission → 提取前缀 /settings/
-        const firstChildPath = item.children[0].key
-        const prefix = firstChildPath.substring(0, firstChildPath.lastIndexOf('/') + 1)
-        map[item.key] = prefix
+        map[item.key] = item.children.map((child: any) => child.key)
       }
     })
 
@@ -77,9 +77,9 @@ export default function AppLayout() {
     const path = location.pathname
     const matchedParentKeys: string[] = []
 
-    // 遍历所有父菜单，自动匹配当前路由
-    Object.entries(parentMenuMap).forEach(([parentKey, prefix]) => {
-      if (path.startsWith(prefix)) {
+    // 遍历所有父菜单，匹配当前路由或其子路由
+    Object.entries(parentMenuMap).forEach(([parentKey, childPaths]) => {
+      if (childPaths.some((childPath) => path === childPath || path.startsWith(`${childPath}/`))) {
         matchedParentKeys.push(parentKey)
       }
     })
