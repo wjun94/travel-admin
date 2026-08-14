@@ -17,11 +17,11 @@ export interface Post {
 }
 
 /**
- * 分页获取攻略列表（含审核状态，支持状态筛选）
- * @param params 分页及查询参数（page/pageSize/status）
+ * 分页获取攻略列表（含审核状态，支持状态筛选与目的地搜索）
+ * @param params 分页及查询参数（page/pageSize/status/destination）
  * @returns 攻略列表及总数
  */
-export const getPosts = (params: { page: number; pageSize: number; status?: number; [key: string]: any }) =>
+export const getPosts = (params: { page: number; pageSize: number; status?: number; destination?: string; [key: string]: any }) =>
   request<{ list: Post[]; total: number }>({
     url: '/admin/guides',
     method: 'GET',

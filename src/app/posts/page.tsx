@@ -196,6 +196,7 @@ const PostsPage = () => {
         columns={columns}
         request={getPosts}
         searchFields={[
+          { name: 'destination', label: '目的地', type: 'input' },
           {
             name: 'status',
             label: '状态',
