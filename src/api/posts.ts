@@ -21,7 +21,7 @@ export interface Post {
  * @param params 分页及查询参数（page/pageSize/status/destination）
  * @returns 攻略列表及总数
  */
-export const getPosts = (params: { page: number; pageSize: number; status?: number; destination?: string; [key: string]: any }) =>
+export const getPosts = (params: { page: number; pageSize: number; status?: number; destination?: string; title?: string; [key: string]: any }) =>
   request<{ list: Post[]; total: number }>({
     url: '/admin/guides',
     method: 'GET',

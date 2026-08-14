@@ -234,6 +234,7 @@ const PartnerAuditPage = () => {
         scroll={{ x: 1300 }}
         searchFields={[
           { name: 'destination', label: '目的地', type: 'input' },
+          { name: 'title', label: '标题', type: 'input' },
           {
             name: 'type',
             label: '类型',

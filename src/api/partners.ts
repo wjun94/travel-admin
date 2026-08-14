@@ -87,7 +87,7 @@ export interface Partner {
 }
 
 /** 获取搭子列表（分页，支持目的地/状态/类型筛选；type -1全部 0用户 1官方，默认1） */
-export const getPartners = (params: { page: number; pageSize: number; destination?: string; status?: number; type?: number; [key: string]: any }) =>
+export const getPartners = (params: { page: number; pageSize: number; destination?: string; title?: string; status?: number; type?: number; [key: string]: any }) =>
   request<{ list: Partner[]; total: number }>({
     url: '/admin/partners',
     method: 'GET',
