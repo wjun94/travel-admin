@@ -9,10 +9,11 @@ import {
   StarOutlined,
   UsergroupAddOutlined,
   WarningOutlined,
+  RobotOutlined,
 } from '@ant-design/icons';
 import { getDashboardData, DashboardData } from '@/api/dashboard';
 
-// 8 个统计维度配置（key 对应后端返回字段）
+// 9 个统计维度配置（key 对应后端返回字段）
 const DIMENSIONS: {
   key: keyof DashboardData;
   label: string;
@@ -28,6 +29,7 @@ const DIMENSIONS: {
   { key: 'favorite', label: '收藏', icon: <StarOutlined />, color: '#faad14', bg: '#fffbe6' },
   { key: 'application', label: '搭子申请', icon: <UsergroupAddOutlined />, color: '#13c2c2', bg: '#e6fffb' },
   { key: 'complaint', label: '投诉', icon: <WarningOutlined />, color: '#f5222d', bg: '#fff1f0' },
+  { key: 'aiGenerate', label: 'AI生成', icon: <RobotOutlined />, color: '#8b5cf6', bg: '#f5f3ff' },
 ];
 
 // 时间段切换选项（field 对应 DimensionCounts 字段）
